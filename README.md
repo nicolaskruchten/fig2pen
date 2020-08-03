@@ -1,8 +1,12 @@
 # fig2pen
 
+## Installation
+
 ```bash
 pip uninstall fig2pen && pip install git+git://github.com/nicolaskruchten/fig2pen.git#egg=fig2pen
 ```
+
+## Usage
 
 ```python
 from fig2pen import single, react_multi

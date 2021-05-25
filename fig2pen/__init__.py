@@ -2,13 +2,30 @@ from IPython.core.display import HTML, display
 import json
 
 
-def single(fig, template=False):
+def get_js_url(branch, cdn_version):
+    if branch is None:
+        return "https://cdn.plot.ly/plotly-%s.min.js" % cdn_version
+    import requests
+
+    builds = requests.get(
+        "https://circleci.com/api/v1.1/project/github/plotly/"
+        + "plotly.js/tree/%s?limit=50&filter=completed" % branch
+    ).json()
+    build_num = [
+        b for b in builds if b["build_parameters"]["CIRCLE_JOB"] == "publish-dist"
+    ][0]["build_num"]
+    return (
+        "https://%d-45646037-gh.circle-artifacts.com/0/dist/plotly.min.js" % build_num
+    )
+
+
+def single(fig, template=False, branch=None, cdn_version="latest"):
     fig_json = json.loads(fig.to_json())
-    if template == False:
+    if not template:
         del fig_json["layout"]["template"]
     payload = dict(
         html='<div id="gd" style="width: 95vw; height: 95vh" />',
-        js_external="https://cdn.plot.ly/plotly-latest.min.js",
+        js_external=get_js_url(branch, cdn_version),
         js="""Plotly.newPlot(
           document.getElementById("gd"),
           %s
@@ -29,9 +46,9 @@ def single(fig, template=False):
     )
 
 
-def react_multi(figs, template=False):
+def react_multi(figs, template=False, branch=None, cdn_version="latest"):
     fig_json = [json.loads(fig.to_json()) for fig in figs]
-    if template == False:
+    if not template:
         for f in fig_json:
             del f["layout"]["template"]
     payload = dict(
@@ -41,7 +58,7 @@ def react_multi(figs, template=False):
 <pre id="code"></pre>
         """,
         js_external=[
-            "https://cdn.plot.ly/plotly-latest.min.js",
+            get_js_url(branch, cdn_version),
             "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js",
         ],
         js="""

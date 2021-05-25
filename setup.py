@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="fig2pen",
-    version="0.2.0",
+    version="0.3.0",
     author="Nicolas Kruchten",
     packages=["fig2pen"],
     license="MIT",

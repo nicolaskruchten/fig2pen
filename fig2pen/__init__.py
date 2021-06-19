@@ -4,6 +4,10 @@ import json
 
 def get_js_url(branch, cdn_version):
     if branch is None:
+        if cdn_version is None:
+            from plotly.offline import get_plotlyjs_version
+
+            cdn_version = get_plotlyjs_version()
         return "https://cdn.plot.ly/plotly-%s.min.js" % cdn_version
     import requests
 
@@ -19,7 +23,7 @@ def get_js_url(branch, cdn_version):
     )
 
 
-def single(fig, template=False, branch=None, cdn_version="latest"):
+def single(fig, template=False, branch=None, cdn_version=None):
     fig_json = json.loads(fig.to_json())
     if not template:
         del fig_json["layout"]["template"]
@@ -46,7 +50,7 @@ def single(fig, template=False, branch=None, cdn_version="latest"):
     )
 
 
-def react_multi(figs, template=False, branch=None, cdn_version="latest"):
+def react_multi(figs, template=False, branch=None, cdn_version=None):
     fig_json = [json.loads(fig.to_json()) for fig in figs]
     if not template:
         for f in fig_json:

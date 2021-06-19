@@ -3,17 +3,21 @@
 ## Installation
 
 ```bash
-pip uninstall fig2pen && pip install git+git://github.com/nicolaskruchten/fig2pen.git#egg=fig2pen
+pip install -U fig2pen
 ```
 
 ## Usage
 
 ```python
-from fig2pen import single, react_multi
+import fig2pen
 
-single(fig) # strips out template
-single(fig, template=True) # leave template alone
+fig2pen.single(fig)
+fig2pen.react_multi([fig_state1, fig_state2])
 
-react_multi([fig_state1, fig_state2]) # strips out template
-react_multi([fig_state1, fig_state2], template=True) # strips out template
+# default behaviour is to erase fig.layout.template
+fig2pen.single(fig, template=True) # don't strip out layout.template
+
+# default Plotly.js version is the same one as is built into active Plotly.py
+fig2pen.single(fig, cdn_version="1.58.4") # use specific JS version
+fig2pen.single(fig, branch="plotly.js_branch_name") # use specifc CircleCI artifact
 ```
